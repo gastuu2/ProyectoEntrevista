@@ -1,0 +1,54 @@
+<div class="row mb-3">
+  <div class="card col-8" style="border-color: #808b96">
+    <div class="card-body">
+        <h4 class="card-title"><a>Nueva Cuenta :</a></h4>
+        <div class="md-form input-group mb-6">
+            <div class="col-3">
+                    <!-- First name -->
+                    <div class="input-group-prepend">
+                            <span class="input-group-text md-addon">Moneda</span>
+                    </div>    
+                    <select [(ngModel)]="currentAccount.currency" name="first">
+                        <option *ngFor="let c of currencies">
+                           {{c.name}}
+                        </option>
+                    </select>
+            </div>
+            <div class="col-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text md-addon">Balance: </span>
+                </div>
+                <input type="number" [(ngModel)]="currentAccount.balance" class="form-control">
+            </div>        
+        </div> 
+        <div class="col-12">
+            <button type="button" (click)="createAccount()" class="btn btn-outline-primary waves-effect float-right">Crear Cuenta</button>
+        </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+    <div class="card col mb-3" style="border-color: #808b96">
+      <div class="card-body">
+        <div class="table-responsive col " id="todosclientes">
+          <table class="table table-hover" style="border-spacing:0;" id="">  
+            <tr class="" style="">
+                <th> ID </th>
+                <th> Moneda </th>
+                <th> Monto     </th>
+                <th> Fecha creacion  </th>
+                <th></th>
+            </tr>
+            <tr *ngFor="let account of currentAccounts">
+                <td> {{ account.id }} </td>
+                <td> {{ account.currency }} </td>
+                <td> {{ account.balance }}    </td>
+                <td>   </td>
+                <td> <button type="button" (click)= "getMovements(account.id)"  class="btn-sm btn-default">Ver Movimientos <i class="fa fa-folder-open-o" aria-hidden="true"></i></button>  </td>
+            </tr>
+          </table> 
+      </div>
+    </div> 
+	</div>
+</div>
+
