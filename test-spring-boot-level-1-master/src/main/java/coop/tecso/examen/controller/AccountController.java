@@ -1,6 +1,7 @@
 package coop.tecso.examen.controller;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import coop.tecso.examen.dto.AccountMovementDto;
+import coop.tecso.examen.dto.AddMovementRequestDto;
 import coop.tecso.examen.model.CurrentAccount;
-import coop.tecso.examen.model.Movement;
 import coop.tecso.examen.service.CurrentAccountService;
 import coop.tecso.examen.service.MovementService;
 
@@ -59,12 +59,13 @@ public class AccountController {
 	}
 	
 	@PostMapping("/addMovement")
-	public String addMovementToAccount(@RequestBody AccountMovementDto accountMovement) {
+	public String addMovementToAccount(@RequestBody AddMovementRequestDto addmovementRequestDto) {
 		
 		
-		CurrentAccount ca= currentAccountService.findAccountById(accountMovement.getAccountId());
-		ca.getMovements().add(accountMovement.getMovement());
-		ca.setBalance(ca.getBalance()+ accountMovement.getMovement().getAmount());
+		CurrentAccount ca= currentAccountService.findAccountById(addmovementRequestDto.getId());
+		addmovementRequestDto.getMovement().setAmount(round(addmovementRequestDto.getMovement().getAmount(),2));
+		ca.getMovements().add(addmovementRequestDto.getMovement());
+		ca.setBalance(ca.getBalance()+ addmovementRequestDto.getMovement().getAmount());
 		boolean rejected=false;
 		switch(ca.getCurrency()) {
 		
@@ -91,6 +92,14 @@ public class AccountController {
 		}
 		
 	
+	}
+	
+	public static double round(double value, int places) {
+	    if (places < 0) throw new IllegalArgumentException();
+
+	    BigDecimal bd = new BigDecimal(value);
+	    bd = bd.setScale(places, RoundingMode.HALF_UP);
+	    return bd.doubleValue();
 	}
 	
 		

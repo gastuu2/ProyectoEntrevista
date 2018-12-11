@@ -1,25 +1,30 @@
 package coop.tecso.examen.dto;
 
+import java.util.List;
+
+import coop.tecso.examen.model.CurrentAccount;
 import coop.tecso.examen.model.Movement;
 
 public class AccountMovementDto {
 	
-	private Long accountId;
-	private Movement movement;
+	private CurrentAccount account;
+	private List<Movement> movement;
 	
 	
-	public Long getAccountId() {
-		return accountId;
+	public CurrentAccount getAccount() {
+		return account;
 	}
-	public void setAccountId(Long accountId) {
-		this.accountId = accountId;
-	}
-	public Movement getMovement() {
+	
+	public List<Movement> getMovement() {
 		return movement;
 	}
-	public void setMovement(Movement movement) {
+	public void setMovement(List<Movement> movement) {
 		this.movement = movement;
 	}
+	public void setAccount(CurrentAccount account) {
+		this.account = account;
+	}
+	
 	
 	
 	

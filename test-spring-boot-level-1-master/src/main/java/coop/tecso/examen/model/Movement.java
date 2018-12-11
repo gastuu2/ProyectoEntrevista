@@ -20,27 +20,14 @@ public class Movement extends AbstractPersistentObject {
 	 */
 	private static final long serialVersionUID = 4L;
 	
-//	@Id
-//	@GeneratedValue
-//	private Long id;
-//	@ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "id")
-//	private CurrentAccount accountId;
 	private Date date;
 	private String movementType;
-	//@ManyToOne(fetch = FetchType.LAZY)
     private Long account_id;
 	private String description;
-	private float amount;
+	private double amount;
 	
 	
 	
-//	public Long getId() {
-//		return id;
-//	}
-//	public void setId(Long id) {
-//		this.id = id;
-//	}
 	
 	
 	
@@ -53,12 +40,6 @@ public class Movement extends AbstractPersistentObject {
 	public Date getDate() {
 		return date;
 	}
-//	public CurrentAccount getCurrentAccount() {
-//		return currentAccount;
-//	}
-//	public void setCurrentAccount(CurrentAccount currentAccount) {
-//		this.currentAccount = currentAccount;
-//	}
 	public void setDate(Date date) {
 		this.date = date;
 	}
@@ -74,10 +55,10 @@ public class Movement extends AbstractPersistentObject {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public float getAmount() {
+	public double getAmount() {
 		return amount;
 	}
-	public void setAmount(float amount) {
+	public void setAmount(double amount) {
 		this.amount = amount;
 	}
 	@Override
