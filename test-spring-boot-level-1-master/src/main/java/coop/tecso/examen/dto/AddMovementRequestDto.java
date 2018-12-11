@@ -6,6 +6,7 @@ public class AddMovementRequestDto {
 	
 	private Long id;
 	private Movement movement;
+	
 	public Long getId() {
 		return id;
 	}
