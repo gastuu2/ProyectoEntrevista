@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import coop.tecso.examen.dto.AddMovementRequestDto;
 import coop.tecso.examen.model.CurrentAccount;
+import coop.tecso.examen.model.Movement;
 import coop.tecso.examen.service.CurrentAccountService;
 import coop.tecso.examen.service.MovementService;
 
@@ -59,13 +60,14 @@ public class AccountController {
 	}
 	
 	@PostMapping("/addMovement")
-	public String addMovementToAccount(@RequestBody AddMovementRequestDto addmovementRequestDto) {
+//	public String addMovementToAccount(@RequestBody AddMovementRequestDto addmovementRequestDto) {
+	public String addMovementToAccount(@RequestBody Movement movement) {
 		
 		
-		CurrentAccount ca= currentAccountService.findAccountById(addmovementRequestDto.getId());
-		addmovementRequestDto.getMovement().setAmount(round(addmovementRequestDto.getMovement().getAmount(),2));
-		ca.getMovements().add(addmovementRequestDto.getMovement());
-		ca.setBalance(ca.getBalance()+ addmovementRequestDto.getMovement().getAmount());
+		CurrentAccount ca= currentAccountService.findAccountById(movement.getAccount_id());
+		movement.setAmount(round(movement.getAmount(),2));
+		ca.getMovements().add(movement);
+		ca.setBalance(ca.getBalance()+ movement.getAmount());
 		boolean rejected=false;
 		switch(ca.getCurrency()) {
 		
