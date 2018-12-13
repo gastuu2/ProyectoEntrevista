@@ -2,8 +2,12 @@ package coop.tecso.examen.controller;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.SQLException;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +24,8 @@ import coop.tecso.examen.service.MovementService;
 @RestController
 public class AccountController {
 	
+	private final Logger logger = Logger.getLogger(AccountController.class);
+	
 	@Autowired
 	CurrentAccountService currentAccountService;
 	
@@ -34,10 +40,8 @@ public class AccountController {
 	public ResponseEntity CreateAccount(@RequestBody CurrentAccount account) {
 		
 		try{
-			currentAccountService.createAccount(account);
+			currentAccountService.updateAccount(account);
 		}catch(Exception e) {
-			System.out.println(e.getMessage());
-			
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error creating account");
 		}
 		
@@ -90,7 +94,13 @@ public class AccountController {
 				break;
 		}
 		if(!rejected) {
-			return currentAccountService.updateAccount(ca);
+			 try {
+				currentAccountService.updateAccount(ca);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			 return "Ok";
 		}else {
 			return " Your movement was rejected ";
 		}

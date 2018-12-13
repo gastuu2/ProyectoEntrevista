@@ -29,3 +29,7 @@ spring:
     url: jdbc:h2:mem:testdb
     driver: org.h2.Driver
     username: sa
+    
+    
+logging.level.root: DEBUG
+logging.file : tecso.log
