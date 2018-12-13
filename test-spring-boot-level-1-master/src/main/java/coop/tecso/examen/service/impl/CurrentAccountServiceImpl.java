@@ -38,7 +38,7 @@ public class CurrentAccountServiceImpl implements CurrentAccountService {
 			return "Error creating new movement";
 		}
 		
-		return "Movement added. " ;
+		return "OK" ;
 		
 		
 	}

@@ -5,12 +5,13 @@ import java.math.RoundingMode;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import coop.tecso.examen.dto.AddMovementRequestDto;
 import coop.tecso.examen.model.CurrentAccount;
 import coop.tecso.examen.model.Movement;
 import coop.tecso.examen.service.CurrentAccountService;
@@ -30,16 +31,17 @@ public class AccountController {
 	private final double MAX_EUROS= -150;
 	
 	@PostMapping("/createAccount")
-	public String CreateAccount(@RequestBody CurrentAccount account) {
+	public ResponseEntity CreateAccount(@RequestBody CurrentAccount account) {
+		
 		try{
-			System.out.println("la cuenta q llego  : "+ account.getCurrency() + "       :" + account.getBalance());
 			currentAccountService.createAccount(account);
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
-			return "error creating Account";
+			
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error creating account");
 		}
 		
-		return "Account created";
+		return ResponseEntity.status(HttpStatus.OK).body("Account created");
 		
 	}
 	

@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule , NO_ERRORS_SCHEMA  } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import {HttpClientModule, HttpParams} from '@angular/common/http';
 
@@ -29,6 +29,7 @@ import { MovementsComponent } from './components/movements/movements.component';
     MDBBootstrapModule.forRoot(),
     APP_ROUTING,
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule
   ],
   providers: [

@@ -3,7 +3,9 @@ import { CurrentAccount} from '../../models/currentAccount';
 import { CurrentAccountService } from '../../services/currentAccount.service';
 import { MovementsService } from '../../services/movements.service';
 import { Router } from '@angular/router';
+import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { map } from 'rxjs/operators';
+import * as $ from 'jquery';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -12,6 +14,7 @@ import { map } from 'rxjs/operators';
 export class HomeComponent implements OnInit {
 
   selectedCurrency: string;
+  accountForm: FormGroup;
   
   private currentAccount ={
     balance: 0,
@@ -31,21 +34,54 @@ export class HomeComponent implements OnInit {
 
   constructor(private currentAccountService: CurrentAccountService, private router: Router,
               private movementsService: MovementsService) { 
-   
+    this.accountForm = this.createFormGroup();
+    this.updateTable();
   }
 
   ngOnInit() {
-     this.updateTable();
+     
+  }
+
+
+  createFormGroup() {
+    return new FormGroup({
+        currency: new FormControl(),
+        balance: new FormControl()
+    });
   }
 
   createAccount(){
-      this.currentAccountService.createAccount(this.currentAccount).pipe(map(res => res as string)).subscribe(
+      if(!this.accountForm.valid){
+        //$("#fieldsRequired").removeAttr('hidden');
+        $("#fieldsRequired").fadeIn();
+        setTimeout(() => {
+          //$("#fieldsRequired").attr('hidden','true');
+          $("#fieldsRequired").fadeOut();
+        }, 1500);
+        return;
+      }
+      const now= new Date();
+      this.currentAccount= Object.assign({}, this.accountForm.value);
+      this.currentAccountService.createAccount(this.currentAccount).subscribe(
         result => {
-            console.log(result);
             this.updateTable();
+            if(result === 'Ok'){
+              $("#newAccountOk").fadeIn();
+            }else{
+              $("#newAccountFail").fadeIn();
+            }
+            setTimeout(() => {
+              //$("#fieldsRequired").attr('hidden','true');
+              $("#newAccountOk").fadeOut();
+              $("#newAccountFail").fadeOut();
+            }, 1500);
+            this.updateTable();
+        },
+        error => {
+            console.log("el error ", error );
         }
       );
-      this.updateTable();
+      
   }
 
   updateTable(){
