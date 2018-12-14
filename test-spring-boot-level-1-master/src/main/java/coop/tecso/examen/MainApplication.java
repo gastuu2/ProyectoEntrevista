@@ -12,7 +12,6 @@ public class MainApplication {
 	private static final Logger logger= Logger.getLogger(MainApplication.class);
 
 	public static void main(final String[] args) {
-		logger.info("Lalalalala");
 		SpringApplication.run(MainApplication.class, args);
 	}
 	

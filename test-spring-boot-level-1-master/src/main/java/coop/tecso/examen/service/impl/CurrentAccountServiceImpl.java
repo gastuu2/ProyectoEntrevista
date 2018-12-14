@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import coop.tecso.examen.controller.AccountController;
 import coop.tecso.examen.model.CurrentAccount;
-import coop.tecso.examen.model.Movement;
 import coop.tecso.examen.repository.CurrentAccountRepository;
 import coop.tecso.examen.repository.MovementRepository;
 import coop.tecso.examen.service.CurrentAccountService;
@@ -29,13 +28,8 @@ public class CurrentAccountServiceImpl implements CurrentAccountService {
 
 
 	@Override
-	public void updateAccount(CurrentAccount currentAccount) throws SQLException {
-		try {
+	public void updateAccount(CurrentAccount currentAccount) throws JDBCException {
 			currentAccountRepository.save(currentAccount);
-		}catch (JDBCException e) {
-			logger.error("Error creating new account : " + e.getMessage());
-			 throw e;
-		}
 	}
 
 	@Override
@@ -49,36 +43,15 @@ public class CurrentAccountServiceImpl implements CurrentAccountService {
 		try {
 			accounts= currentAccountRepository.findAll();
 		}catch (Exception e) {
-			System.out.println(e.getMessage());
-			
+			logger.error(e.getMessage());
 		}
 		
 		return accounts;
 	}
 
 	@Override
-	public void addMovement(Movement movement, CurrentAccount currentAccount) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public List<Movement> getMovementsByAccount(Long id) {
-		
-		return null;
-	}
-
-	@Override
-	public String deleteAccount(CurrentAccount currentAccount) {
-		
-		try {
+	public void deleteAccount(CurrentAccount currentAccount) throws JDBCException {
 			currentAccountRepository.delete(currentAccount);
-		}catch(Exception e) {
-			System.out.println(e.getMessage());
-			return "Error while deleting account";
-		}
-		
-		return "Account deleted";
 	}
 	
 	

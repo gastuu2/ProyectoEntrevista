@@ -2,6 +2,7 @@ package coop.tecso.examen.controller;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import coop.tecso.examen.model.CurrentAccount;
 import coop.tecso.examen.model.Movement;
+import coop.tecso.examen.repository.CurrentAccountRepository;
 import coop.tecso.examen.service.CurrentAccountService;
 import coop.tecso.examen.service.MovementService;
 
@@ -29,6 +31,9 @@ public class AccountController {
 	CurrentAccountService currentAccountService;
 	
 	@Autowired
+	CurrentAccountRepository currentRepository;
+	
+	@Autowired
 	MovementService movementService;
 	
 	private final double MAX_PESOS= -1000;
@@ -39,6 +44,7 @@ public class AccountController {
 	public ResponseEntity CreateAccount(@RequestBody CurrentAccount account) {
 		
 		try{
+			account.setCreationTimestamp(new Date());
 			currentAccountService.updateAccount(account);
 		}catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error creating account");
@@ -54,13 +60,18 @@ public class AccountController {
 	}
 	
 	
-	@GetMapping("/deleteMovement")
-	public String deleteAccount(Long id ) {
-		CurrentAccount ca= currentAccountService.findAccountById(id);
-		if(ca.getMovements().size()<1) {
-			return currentAccountService.deleteAccount(ca);
+	@GetMapping("/deleteAccount")
+	public ResponseEntity deleteAccount(Long id ) {
+		CurrentAccount currentAccount= currentAccountService.findAccountById(id);
+		if(currentAccount.getMovements().size()<1) {
+			try {
+				currentAccountService.deleteAccount(currentAccount);
+				return ResponseEntity.status(HttpStatus.OK).body("Account deleted");
+			}catch(Exception e) {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Account cannot be deleted");
+			}
 		}else {
-			return "The account cannot be deleted";
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Account cannot be deleted");
 		}
 	}
 	
@@ -76,26 +87,9 @@ public class AccountController {
 		movement.setAmount(round(movement.getAmount(),2));
 		ca.getMovements().add(movement);
 		ca.setBalance(ca.getBalance()+ movement.getAmount());
-		boolean rejected=false;
-		switch(ca.getCurrency()) {
-		
-			case "PESOS":
-				if(ca.getBalance()< MAX_PESOS) {
-					rejected= true;
-				}
-				break;
-			case "DOLARES":
-				if(ca.getBalance()< MAX_DOLARES) {
-					rejected= true;
-				}
-				break;
-			case "EUROS":
-				if(ca.getBalance()< MAX_EUROS) {
-					rejected=true;
-				}
-				break;
-		}
-		if(!rejected) {
+		ca.setModificationTimestamp(new Date());
+		if(!isMovementRejected(ca)) {
+			
 			 try {
 				currentAccountService.updateAccount(ca);
 			} catch (Exception e) {
@@ -104,11 +98,38 @@ public class AccountController {
 			}
 			 return ResponseEntity.status(HttpStatus.OK).body("movement added");
 		
+			 
 		}else {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("REJECTED");
 		}
 		
 	
+	}
+	
+	public Boolean isMovementRejected(CurrentAccount ca) {
+		boolean rejected=false;
+		
+		switch(ca.getCurrency()) {
+		
+		case "PESOS":
+			if(ca.getBalance()< MAX_PESOS) {
+				rejected= true;
+			}
+			break;
+		case "DOLARES":
+			if(ca.getBalance()< MAX_DOLARES) {
+				rejected= true;
+			}
+			break;
+		case "EUROS":
+			if(ca.getBalance()< MAX_EUROS) {
+				rejected=true;
+			}
+			break;
+		}
+		
+		return rejected;
+		
 	}
 	
 	public static double round(double value, int places) {

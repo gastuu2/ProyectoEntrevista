@@ -1,18 +1,16 @@
 package coop.tecso.examen.service;
 
-import java.sql.SQLException;
 import java.util.List;
 
+import org.hibernate.JDBCException;
+
 import coop.tecso.examen.model.CurrentAccount;
-import coop.tecso.examen.model.Movement;
 
 public interface CurrentAccountService {
 	
-	public void updateAccount (CurrentAccount currentAccount)  throws SQLException;
-	public String deleteAccount (CurrentAccount currentAccount);
+	public void updateAccount (CurrentAccount currentAccount)  throws JDBCException;
+	public void deleteAccount (CurrentAccount currentAccount) throws JDBCException;
 	public List<CurrentAccount> getAccounts();
 	public CurrentAccount findAccountById(Long id);
-	public void addMovement(Movement movement, CurrentAccount currentAccount);
-	public List<Movement> getMovementsByAccount(Long id);
 
 }
