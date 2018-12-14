@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hibernate.JDBCException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,23 +30,17 @@ public class CurrentAccountServiceImpl implements CurrentAccountService {
 
 	@Override
 	public void updateAccount(CurrentAccount currentAccount) throws SQLException {
-//		try {
-//			currentAccountRepository.save(currentAccount);
-//		}catch (JDBCException e) {
-//			logger.error("Error creating new account : " + e.getMessage());
-//			 throw new  JDBCException("ERROR ", e.getSQLException());
-//		}
-		logger.error("Error creating new account : ");
-		 throw new  SQLException("ERROR ");
-		
-		
+		try {
+			currentAccountRepository.save(currentAccount);
+		}catch (JDBCException e) {
+			logger.error("Error creating new account : " + e.getMessage());
+			 throw e;
+		}
 	}
 
 	@Override
 	public CurrentAccount findAccountById(Long id) {
-		
 		return currentAccountRepository.findById(id).get();
-		
 	}
 	
 	@Override

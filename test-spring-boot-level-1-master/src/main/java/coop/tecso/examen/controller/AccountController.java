@@ -2,7 +2,6 @@ package coop.tecso.examen.controller;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -66,11 +65,14 @@ public class AccountController {
 	}
 	
 	@PostMapping("/addMovement")
-//	public String addMovementToAccount(@RequestBody AddMovementRequestDto addmovementRequestDto) {
-	public String addMovementToAccount(@RequestBody Movement movement) {
+	public ResponseEntity addMovementToAccount(@RequestBody Movement movement) {
 		
 		
 		CurrentAccount ca= currentAccountService.findAccountById(movement.getAccount_id());
+		if(ca== null) {
+			logger.warn("Could not find account while creating new movement");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Account of movement do not exists");
+		}
 		movement.setAmount(round(movement.getAmount(),2));
 		ca.getMovements().add(movement);
 		ca.setBalance(ca.getBalance()+ movement.getAmount());
@@ -96,13 +98,14 @@ public class AccountController {
 		if(!rejected) {
 			 try {
 				currentAccountService.updateAccount(ca);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (Exception e) {
+				logger.warn("problem updating account : " + e.getMessage());
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
 			}
-			 return "Ok";
+			 return ResponseEntity.status(HttpStatus.OK).body("movement added");
+		
 		}else {
-			return " Your movement was rejected ";
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("REJECTED");
 		}
 		
 	
