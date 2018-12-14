@@ -7,6 +7,7 @@ import { MovementsService } from '../../services/movements.service';
 import { Router } from '@angular/router';
 import { map } from 'rxjs/operators';
 import * as $ from 'jquery';
+import { IfStmt } from '@angular/compiler';
 
 
 @Component({
@@ -47,11 +48,6 @@ export class MovementsComponent implements OnInit {
       });
   }
 
-  resetAlerts(){
-    $("#newMovementOk").attr('hidden','true');
-    $("#newMovementFail").attr('hidden','true');
-  }
-
   createFormGroup() {
     return new FormGroup({
         movementType: new FormControl(),
@@ -80,15 +76,25 @@ export class MovementsComponent implements OnInit {
           this.movementForm.reset();
           $("#closeModal").click();
           this.getMovements();
-          if(result === 'OK'){
-            $("#newMovementOk").fadeIn();
-          }else{
-            $("#newMovementFail").fadeIn();
-          }
-          setTimeout(() =>{
+         $("#newMovementOk").fadeIn();
+         setTimeout(() =>{
             $("#newMovementOk").fadeOut();
+          }, 1800);
+        },
+        error => {
+          this.newMovement= new Movement();
+          this.movementForm.reset();
+          $("#closeModal").click();
+          if(error.error === 'REJECTED'){
+            $("#newMovementFail").fadeIn();
+          }else{
+            $("#newMovementException").fadeIn();
+            console.log(error);
+          }
+          setTimeout(() => {
             $("#newMovementFail").fadeOut();
-          }, 1500);
+            $("newMovementException").fadeOut();
+          }, 2000);
         }
 
       );

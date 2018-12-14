@@ -8,7 +8,7 @@
                     <div class="input-group-prepend">
                             <span class="input-group-text md-addon">Moneda</span>
                     </div>    
-                    <input type="text" class="form-control" [(ngModel)]="movementsAccounts.account.currency" disabled='true'>    
+                    <input type="text" class="form-control"  disabled='true' value="{{movementsAccounts.account.currency}}">    
                     
             </div>
             <div class="col-5">
@@ -16,7 +16,7 @@
               <div class="input-group-prepend">
                       <span class="input-group-text md-addon">Balance</span>
               </div>    
-              <input type="number" step="0.01" class="form-control" [(ngModel)]="movementsAccounts.account.balance" disabled='true'>    
+              <input type="number" step="0.01" class="form-control" value="{{movementsAccounts.account.balance}}" disabled='true'>    
               
             </div>
                    
@@ -32,9 +32,15 @@
   Nuevo movimiento agregado correctamente!
 </div>
 <div class="row mt-3 mb-3  alert alert-danger" role="alert" id="newMovementFail"  style="display: none">
-  Movimiento Rechazado!
+  Movimiento Rechazado, descubierto generado mayor a 1000.
 </div>
-
+<div class="row mt-3 mb-3  alert alert-danger" role="alert" id="newMovementException"  style="display: none">
+  No se pudo crear el movimiento.
+</div>
+<H2>Movimientos: </H2>
+<div class="alert alert-primary mb-3" role="alert" *ngIf="movementsAccounts.movement.length < 1">
+  La cuenta no posee movimientos.
+</div>
 <div class="row">
   <div class="card col mb-3" style="border-color: #808b96">
     <div class="card-body">

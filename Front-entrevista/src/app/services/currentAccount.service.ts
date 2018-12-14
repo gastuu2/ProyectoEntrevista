@@ -19,10 +19,10 @@ export class CurrentAccountService{
         return  this.http.post('/api/createAccount', account, {responseType: 'text'});
     }
 
-    deleteAccount(){
-
-
-    }
+    deleteAccount(id){
+        const params = new HttpParams().set('id', id);
+        return  this.http.get('/api/deleteAccount', { params : params , responseType: 'text'});
+    }   
 
     getAllAccounts(){
         return  this.http.get('/api/getAccounts', { responseType: 'json'});

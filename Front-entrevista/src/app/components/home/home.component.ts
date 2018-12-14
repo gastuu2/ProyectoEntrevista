@@ -50,12 +50,28 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  deleteAccount(id){
+    this.currentAccountService.deleteAccount(id).subscribe(
+      result =>{
+        $("#accountDeleted").fadeIn();
+        this.updateTable();
+        setTimeout(() => {
+          $("#accountDeleted").fadeOut();
+        }, 1500);
+      },error => {
+        this.updateTable();
+        $("#accountWithMovements").fadeIn();
+        setTimeout(() => {
+          $("#accountWithMovements").fadeOut();
+        }, 2500);
+      }
+    )
+  }
+
   createAccount(){
       if(!this.accountForm.valid){
-        //$("#fieldsRequired").removeAttr('hidden');
         $("#fieldsRequired").fadeIn();
         setTimeout(() => {
-          //$("#fieldsRequired").attr('hidden','true');
           $("#fieldsRequired").fadeOut();
         }, 1500);
         return;
@@ -64,23 +80,21 @@ export class HomeComponent implements OnInit {
       this.currentAccount= Object.assign({}, this.accountForm.value);
       this.currentAccountService.createAccount(this.currentAccount).subscribe(
         result => {
+            $("#newAccountOk").fadeIn();
             this.updateTable();
-            if(result === 'Ok'){
-              $("#newAccountOk").fadeIn();
-            }else{
-              $("#newAccountFail").fadeIn();
-            }
+            this.accountForm.reset();
             setTimeout(() => {
-              //$("#fieldsRequired").attr('hidden','true');
               $("#newAccountOk").fadeOut();
-              $("#newAccountFail").fadeOut();
             }, 1500);
-            this.updateTable();
         },
         error => {
-            console.log("el error ", error );
+            $("#newAccountFail").fadeIn();
+            setTimeout(() => {
+              $("#newAccountFail").fadeOut();
+            }, 1500);
         }
       );
+      
       
   }
 
